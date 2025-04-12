@@ -5,16 +5,17 @@ from beem.account import Account
 from beem.transactionbuilder import TransactionBuilder
 from beembase.operations import Custom_json
 from beemgraphenebase.account import PrivateKey
+from beem.instance import set_shared_blockchain_instance
 
 # ✅ Replace with your Hive account + key
 HIVE_ACCOUNT = "peakecoin.bnb"
-HIVE_POSTING_KEY = "your_private_posting_key_here"
+HIVE_POSTING_KEY = "your_private_posting_key_here"  # 🔐 Replace with your real posting key
 HIVE_NODES = ["https://api.hive.blog", "https://anyx.io"]
 
-# ✅ Connect to Hive with direct key
-hive = Hive(node=HIVE_NODES)
+# ✅ Connect to Hive using direct key
+hive = Hive(node=HIVE_NODES, keys=[HIVE_POSTING_KEY])
+set_shared_blockchain_instance(hive)  # required for signing to work without wallet
 account = Account(HIVE_ACCOUNT, blockchain_instance=hive)
-pk = PrivateKey(HIVE_POSTING_KEY)
 
 def get_balance(account_name, token):
     """Fetch token balance"""
@@ -61,7 +62,6 @@ def place_order(account_name, token, price, quantity, order_type="buy"):
 
     try:
         tx = TransactionBuilder(blockchain_instance=hive)
-        tx.appendWifSigningKey(str(pk))  # ✅ Inject the key directly
         op = Custom_json(
             required_auths=[account_name],
             required_posting_auths=[],
@@ -82,6 +82,6 @@ def place_order(account_name, token, price, quantity, order_type="buy"):
         traceback.print_exc()
         return False
 
-# ✅ Manual test mode
+# ✅ Manual test
 if __name__ == "__main__":
     place_order(HIVE_ACCOUNT, "SWAP.BNB", 0.99, 5, "buy")
