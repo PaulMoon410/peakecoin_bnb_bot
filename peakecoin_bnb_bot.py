@@ -3,8 +3,8 @@ from fetch_market import get_orderbook_top
 from place_order import place_order, HIVE_ACCOUNT
 
 TOKEN = "SWAP.BNB"
-SPREAD = 0.03  # 3% above/below for placing orders
-TRADE_QTY = 0.01
+SPREAD = 0.01  # 3% above/below for placing orders
+TRADE_QTY = 0.001
 SLEEP_TIME = 60  # seconds
 
 def trading_bot():
