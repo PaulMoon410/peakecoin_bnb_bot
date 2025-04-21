@@ -10,8 +10,8 @@ from nectar.instance import set_shared_blockchain_instance
 
 # 🔐 Hive account + keys
 HIVE_ACCOUNT = "peakecoin.bnb"
-HIVE_POSTING_KEY = "5JZWDTJvCkxz2rPXW9qEajMZoKegt9V4nXCcY7WD1LRC7tRbXB6"
-HIVE_ACTIVE_KEY = "5JgXLzFB8fsH64WPWD9fzC4sJQyxSXhn4ykqXrakCnJaSfDjNuL"
+HIVE_POSTING_KEY = ""
+HIVE_ACTIVE_KEY = ""
 HIVE_NODES = ["https://api.hive.blog", "https://anyx.io"]
 
 # ✅ Connect to Hive
