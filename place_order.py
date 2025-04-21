@@ -5,7 +5,7 @@ from nectar.hive import Hive
 from beem import Hive 
 from nectar.account import Account
 from nectar.transactionbuilder import TransactionBuilder
-from beem.operations import Custom_json
+from nectarbase.operations import Custom_json
 from nectar.instance import set_shared_blockchain_instance
 
 # 🔐 Hive account + keys
