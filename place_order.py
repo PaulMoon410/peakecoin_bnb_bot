@@ -1,24 +1,23 @@
-import time
-import requests
 import json as jsonlib
-from beem import Hive
+
+import requests
+from nectar.account import Account
 from nectar.hive import Hive
-from beem.account import Account
-from beem.transactionbuilder import TransactionBuilder
-from beembase.operations import Custom_json
-from beemgraphenebase.account import PrivateKey
-from beem.instance import set_shared_blockchain_instance
+from nectar.instance import set_shared_blockchain_instance
+from nectar.transactionbuilder import TransactionBuilder
+from nectarbase.operations import Custom_json
 
 # 🔐 Hive account + keys
-HIVE_ACCOUNT = "peakecoin.bnb"
-HIVE_POSTING_KEY = "your posting key"
-HIVE_ACTIVE_KEY = "your"
+HIVE_ACCOUNT = "peakcoin.bot"
+HIVE_POSTING_KEY = "secret"
+HIVE_ACTIVE_KEY = "secret"
 HIVE_NODES = ["https://api.hive.blog", "https://anyx.io"]
 
 # ✅ Connect to Hive
 hive = Hive(node=HIVE_NODES, keys=[HIVE_POSTING_KEY, HIVE_ACTIVE_KEY])
 set_shared_blockchain_instance(hive)
 account = Account(HIVE_ACCOUNT, blockchain_instance=hive)
+
 
 def get_balance(account_name, token):
     payload = {
@@ -27,9 +26,9 @@ def get_balance(account_name, token):
         "params": {
             "contract": "tokens",
             "table": "balances",
-            "query": {"account": account_name, "symbol": token}
+            "query": {"account": account_name, "symbol": token},
         },
-        "id": 1
+        "id": 1,
     }
     r = requests.post("https://api.hive-engine.com/rpc/contracts", json=payload)
     if r.status_code == 200:
@@ -37,6 +36,7 @@ def get_balance(account_name, token):
         if result["result"]:
             return float(result["result"][0]["balance"])
     return 0.0
+
 
 def place_order(account_name, token, price, quantity, order_type="buy"):
     token_used = token if order_type == "sell" else "SWAP.HIVE"
@@ -56,8 +56,8 @@ def place_order(account_name, token, price, quantity, order_type="buy"):
         "contractPayload": {
             "symbol": token,
             "quantity": str(round(quantity, 8)),
-            "price": str(round(price, 6))
-        }
+            "price": str(round(price, 6)),
+        },
     }
 
     print(f"📝 Final Order Payload: {payload}")
@@ -65,16 +65,16 @@ def place_order(account_name, token, price, quantity, order_type="buy"):
     try:
         tx = TransactionBuilder(blockchain_instance=hive)
         op = Custom_json(
-            required_auths=[],
-            required_posting_auths=[account_name],
+            required_auths=[account_name],
+            required_posting_auths=[],
             id="ssc-mainnet-hive",
-            json=jsonlib.dumps(payload)
+            json=jsonlib.dumps(payload),
         )
         tx.appendOps([op])
-        tx.appendSigner(account_name, "posting")
+        tx.appendSigner(account_name, "active")
 
         print("🔐 Loaded public keys in wallet:", hive.wallet.getPublicKeys())
-        print("🔑 Required signing key (posting):", account["posting"]["key_auths"][0][0])
+        print("🔑 Required signing key (active):", account["active"]["key_auths"][0][0])
 
         tx.sign()
         print("🔏 Transaction signed successfully!")
@@ -85,7 +85,6 @@ def place_order(account_name, token, price, quantity, order_type="buy"):
     except Exception as e:
         print(f"❌ Error broadcasting order: {e}")
         import traceback
+
         traceback.print_exc()
         return False
-
-

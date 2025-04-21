@@ -1,0 +1,76 @@
+.idea/
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+.coverage*
+coverage.xml
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+.pytest_cache/
+*.egg
+*.eggs
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.cache
+nosetests.xml
+coverage.xml
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+
+# Sphinx documentation
+docs/_build/
+docs/html
+
+# PyBuilder
+target/
+
+# Configuration Files
+*config.py
+
+# Vim temp files
+*.swp
+.ropeproject/
+*/.ropeproject/
+
+# IDEs
+.vscode
+
+# uv and modern packaging
+.uv/
+__pypackages__/
+.ruff_cache/
+.mypy_cache/

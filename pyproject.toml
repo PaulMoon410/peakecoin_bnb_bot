@@ -1,0 +1,9 @@
+[project]
+name = "peakecoin-bnb-bot"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "hive-nectar>=0.0.6",
+]

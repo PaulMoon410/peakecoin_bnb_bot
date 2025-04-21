@@ -1,5 +1,6 @@
 import requests
 
+
 def get_orderbook_top(token="SWAP.BNB"):
     payload = {
         "jsonrpc": "2.0",
@@ -9,15 +10,19 @@ def get_orderbook_top(token="SWAP.BNB"):
             "table": "buyBook",
             "query": {"symbol": token},
             "limit": 1,
-            "indexes": [{"index": "priceDec", "descending": True}]
+            "indexes": [{"index": "priceDec", "descending": True}],
         },
-        "id": 1
+        "id": 1,
     }
-    buy_response = requests.post("https://api.hive-engine.com/rpc/contracts", json=payload)
+    buy_response = requests.post(
+        "https://api.hive-engine.com/rpc/contracts", json=payload
+    )
 
     payload["table"] = "sellBook"
     payload["indexes"] = [{"index": "price", "descending": False}]
-    sell_response = requests.post("https://api.hive-engine.com/rpc/contracts", json=payload)
+    sell_response = requests.post(
+        "https://api.hive-engine.com/rpc/contracts", json=payload
+    )
 
     print("📥 Buy:", buy_response.text)
     print("📤 Sell:", sell_response.text)
