@@ -32,4 +32,3 @@ def get_orderbook_top(token="SWAP.BNB"):
         return {"highestBid": highest_bid, "lowestAsk": lowest_ask}
 
     return None
-
