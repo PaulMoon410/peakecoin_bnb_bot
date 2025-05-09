@@ -1,6 +1,6 @@
 import requests
 
-def get_orderbook_top(token="SWAP.LTC"):
+def get_orderbook_top(token="PEK"):
     # Pull top buy orders (usually works correctly with sorting)
     buy_payload = {
         "jsonrpc": "2.0",
