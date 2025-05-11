@@ -1,32 +1,38 @@
+# peake_ltc.py
 import time
+import datetime
 from fetch_market import get_orderbook_top
-from place_order import place_order, HIVE_ACCOUNT
+from place_order import place_order  # ✅ Uses external module with PEK gas logic
 
+# 🔐 Hive account
+HIVE_ACCOUNT = "peakeoin"
 TOKEN = "PEK"
-SPREAD = 0.01  # 3% above/below for placing orders
-TRADE_QTY = 0.001
-SLEEP_TIME = 60  # seconds
+QTY = 0.0001
+TICK = 0.00000001
+DELAY = 60  # seconds between cycles
 
-def trading_bot():
-    while True:
-        book = get_orderbook_top(TOKEN)
-        if not book:
-            print("❌ Failed to fetch orderbook.")
-            time.sleep(SLEEP_TIME)
-            continue
+def smart_trade(account_name, token, quantity):
+    market = get_orderbook_top(token)
+    if not market:
+        print("⚠️ Failed to fetch market data.")
+        return
 
-        buy_price = book["highestBid"] * (1 - SPREAD)
-        sell_price = book["lowestAsk"] * (1 + SPREAD)
+    bid = market["highestBid"]
+    ask = market["lowestAsk"]
 
-        print(f"🟢 Market Price: {(book['highestBid'] + book['lowestAsk']) / 2} | Buy: {buy_price} | Sell: {sell_price}")
+    buy_price = round(bid + TICK, 8)
+    sell_price = round(max(ask - TICK, buy_price + TICK), 8)
 
-        print(f"⚡ Placing BUY order: {TRADE_QTY} {TOKEN} at {buy_price}")
-        place_order(HIVE_ACCOUNT, TOKEN, buy_price, TRADE_QTY, "buy")
+    print(f"📊 Market: Bid={bid}, Ask={ask}")
+    print(f"🤖 Smart Buy: {buy_price} | Smart Sell: {sell_price}")
 
-        print(f"⚡ Placing SELL order: {TRADE_QTY} {TOKEN} at {sell_price}")
-        place_order(HIVE_ACCOUNT, TOKEN, sell_price, TRADE_QTY, "sell")
-
-        time.sleep(SLEEP_TIME)
+    place_order(account_name, token, buy_price, quantity, order_type="buy")
+    place_order(account_name, token, sell_price, quantity, order_type="sell")
 
 if __name__ == "__main__":
-    trading_bot()
+    while True:
+        try:
+            smart_trade(HIVE_ACCOUNT, TOKEN, QTY)
+        except Exception as e:
+            print(f"⚠️ Unexpected error: {e}")
+        time.sleep(DELAY)
