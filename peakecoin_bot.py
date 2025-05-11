@@ -55,3 +55,7 @@ if __name__ == "__main__":
         except Exception as e:
             print(f"⚠️ Unexpected error: {e}")
         time.sleep(DELAY)
+
+        except Exception as e:
+            print(f"⚠️ Unexpected error: {e}")
+        time.sleep(DELAY)
