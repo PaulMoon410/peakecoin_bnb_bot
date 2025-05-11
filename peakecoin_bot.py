@@ -1,4 +1,4 @@
-# peake_ltc.py
+# peake_bot.py
 import time
 import datetime
 from fetch_market import get_orderbook_top
