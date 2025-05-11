@@ -10,8 +10,8 @@ from nectar.instance import set_shared_blockchain_instance
 
 # 🔐 Hive Credentials
 HIVE_ACCOUNT = "peakecoin"
-HIVE_POSTING_KEY = "Posting Key"
-HIVE_ACTIVE_KEY = "Active Key"
+HIVE_POSTING_KEY = "input your peakecoin posting key"
+HIVE_ACTIVE_KEY = "input your peakecoin active key"
 HIVE_NODES = ["https://api.hive.blog", "https://anyx.io"]
 
 # 💸 Gas token settings (must total ≥ 0.001 HIVE)
@@ -41,6 +41,44 @@ def get_balance(account_name, token):
         if result["result"]:
             return float(result["result"][0]["balance"])
     return 0.0
+
+def get_open_orders(account_name, token):
+    """Fetch open buy and sell orders for the account and token."""
+    payload = {
+        "jsonrpc": "2.0",
+        "method": "find",
+        "params": {
+            "contract": "market",
+            "table": "openOrders",
+            "query": {"account": account_name, "symbol": token},
+            "limit": 1000
+        },
+        "id": 1
+    }
+    r = requests.post("https://api.hive-engine.com/rpc/contracts", json=payload)
+    if r.status_code == 200:
+        result = r.json()
+        return result.get("result", [])
+    return []
+
+def cancel_order(account_name, order_id):
+    """Cancel an order by its orderId."""
+    payload = {
+        "contractName": "market",
+        "contractAction": "cancel",
+        "contractPayload": {"orderId": str(order_id)},
+    }
+    tx = TransactionBuilder(blockchain_instance=hive)
+    op = Custom_json(
+        required_posting_auths=[HIVE_ACTIVE_KEY],
+        required_auths=[account_name],
+        id="ssc-mainnet-hive",
+        json=jsonlib.dumps(payload),
+    )
+    tx.operations = [op]
+    tx.sign()
+    tx.broadcast()
+    print(f"❎ Cancelled order: {order_id}")
 
 def build_and_send_op(account_name, symbol, price, quantity, order_type):
     payload = {
